@@ -155,6 +155,8 @@ class _GamePageState extends State<GamePage> {
       board.solve();
 
       if (isCompleted) {
+        final seconds = totalDuration.inSeconds;
+
         gameDuration.stop();
         gameDuration.reset();
         resetBlockStates();
@@ -164,7 +166,7 @@ class _GamePageState extends State<GamePage> {
           barrierDismissible: false,
           title: const Text('Congrats!'),
           body: Text(
-            'You have completed the game in ${totalDuration.inSeconds} seconds.',
+            'You have completed the game in $seconds seconds.',
           ),
           actions: [
             DialogAction(

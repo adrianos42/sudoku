@@ -15,10 +15,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = ThemeData.dark();
+
     return DesktopApp(
       key: desktopKey,
       title: 'Sudoku',
-      //theme: ThemeData(brightness: themeBrightness ?? Brightness.dark,),
+      theme: themeData.copyWith(
+        colorScheme: ColorScheme(
+          themeData.colorScheme.brightness,
+          primary: PrimaryColor.cornflowerBlue,
+        ),
+      ),
       navigatorObservers: const [_AppNavigatorObserver()],
       onGenerateRoute: (settings) {
         final name = settings.name;
