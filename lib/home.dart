@@ -151,13 +151,6 @@ class _HomePageState extends State<HomePage> {
                         .pushNamed('/game', arguments: Difficulty.hard);
                   }),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
-                  child: Button.text('Very Hard', onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed('/game', arguments: Difficulty.veryHard);
-                  }),
-                ),
               ],
             ),
           ),

@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: themeData.copyWith(
         colorScheme: ColorScheme(
           themeData.colorScheme.brightness,
-          primary: PrimaryColor.cornflowerBlue,
+          primary: PrimaryColors.royalBlue.primaryColor,
         ),
       ),
       navigatorObservers: const [_AppNavigatorObserver()],

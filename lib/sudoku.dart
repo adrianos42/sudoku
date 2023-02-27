@@ -27,7 +27,6 @@ enum Difficulty {
   easy,
   medium,
   hard,
-  veryHard,
 }
 
 enum Symmetry {
@@ -266,15 +265,12 @@ class Sudoku {
 
     switch (value) {
       case Difficulty.easy:
-        _eliminatePositions = boardSize ~/ 4.0;
+        _eliminatePositions = 25;
         break;
       case Difficulty.medium:
-        _eliminatePositions = boardSize ~/ 3.0;
+        _eliminatePositions = 35;
         break;
       case Difficulty.hard:
-        _eliminatePositions = boardSize ~/ 2.0;
-        break;
-      case Difficulty.veryHard:
         _eliminatePositions = boardSize;
         break;
       default: 
@@ -352,13 +348,13 @@ class Sudoku {
   int countSolutionsLimited() => countSolutions(true);
 
   /// If the puzzle has no solutions at all.
-  bool get hasNoSolution => countSolutionsLimited() == 0;
+  bool hasNoSolution() => countSolutionsLimited() == 0;
 
-  /// I the puzzle has a solution and only a single solution/
-  bool get hasUniqueSolution => countSolutionsLimited() == 1;
+  /// The puzzle has a solution and only a single solution/
+  bool hasUniqueSolution() => countSolutionsLimited() == 1;
 
   /// If the puzzle has more than one solution.
-  bool get hasMultipleSolutions => countSolutionsLimited() > 1;
+  bool hasMultipleSolutions() => countSolutionsLimited() > 1;
 
   bool get isSolved => solution.every((e) => e != 0);
 

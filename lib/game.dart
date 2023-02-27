@@ -32,8 +32,6 @@ class _GamePageState extends State<GamePage> {
         return 'Medium';
       case Difficulty.hard:
         return 'Hard';
-      case Difficulty.veryHard:
-        return 'Very Hard';
       default:
         throw 'Invalid difficulty';
     }
@@ -155,7 +153,7 @@ class _GamePageState extends State<GamePage> {
       board.solve();
 
       if (isCompleted) {
-        final seconds = totalDuration.inSeconds;
+        final time = formatDuration();
 
         gameDuration.stop();
         gameDuration.reset();
@@ -166,7 +164,7 @@ class _GamePageState extends State<GamePage> {
           barrierDismissible: false,
           title: const Text('Congrats!'),
           body: Text(
-            'You have completed the game in $seconds seconds.',
+            'You have completed the game in $time.',
           ),
           actions: [
             DialogAction(
@@ -259,36 +257,42 @@ class _GamePageState extends State<GamePage> {
     undoActions.clear();
     redoActions.clear();
 
-    board.difficulty = widget.difficulty;
-    board.recordHistory = true;
-    board.logHistory = false;
-
     Data.difficulty = widget.difficulty;
     Data.clearActions('undo', 0);
     Data.clearActions('redo', 0);
-    Data.gameDuration = Duration.zero;
 
     if (newPuzzle == null) {
       for (int i = 0; i < 1000; i += 1) {
+        Data.gameDuration = Duration.zero;
+        board.difficulty = widget.difficulty;
+        board.recordHistory = true;
+        board.logHistory = false;
+
         final hasPuzzle = board.generatePuzzleSymmetry(Symmetry.random);
         board.solve();
 
         if (hasPuzzle) {
-          if ((board.difficulty == Difficulty.veryHard &&
-                  board.givenCount > 30 &&
-                  board.guessCount == 0) ||
-              (board.difficulty == Difficulty.hard &&
-                  (board.givenCount < 30 || board.givenCount > 40) &&
-                  (board.boxLineReductionCount == 0 ||
-                      board.pointingPairTripleCount == 0 ||
-                      board.hiddenPairCount == 0 ||
-                      board.nakedPairCount == 0)) ||
-              (board.difficulty == Difficulty.medium &&
-                  (board.givenCount < 40 || board.givenCount > 50) &&
-                  board.hiddenSingleCount == 0) ||
-              (board.difficulty == Difficulty.easy && board.givenCount < 50) &&
-                  board.singleCount == 0) {
-            continue;
+          if (board.difficulty == Difficulty.easy) {
+            if (board.givenCount > 50 ||
+                board.givenCount < 45 ||
+                board.hiddenSingleCount != 0) {
+              continue;
+            }
+          } else if (board.difficulty == Difficulty.medium) {
+            if (board.givenCount > 40 ||
+                board.givenCount < 35 ||
+                !(board.boxLineReductionCount == 0 ||
+                    board.pointingPairTripleCount == 0 ||
+                    board.hiddenPairCount == 0 ||
+                    board.nakedPairCount == 0)) {
+              continue;
+            }
+          } else if (board.difficulty == Difficulty.hard) {
+            if (board.givenCount > 28 || board.hiddenSingleCount != 0) {
+              continue;
+            }
+          } else {
+            throw 'Invalid set difficulty.';
           }
 
           puzzle = List.from(board.puzzle);
@@ -336,25 +340,6 @@ class _GamePageState extends State<GamePage> {
   String formatDuration() {
     final e = totalDuration;
     return e.toString().split('.').first.padLeft(8, '0');
-  }
-
-  List<String> get stats {
-    List<String> result = [];
-
-    result.add('Difficulty: ${board.difficulty}');
-    result.add('Number of Givens: ${board.givenCount}');
-    result.add('Number of Singles: ${board.singleCount}');
-    result.add('Number of Hidden Singles: ${board.hiddenSingleCount}');
-    result.add('Number of Naked Pairs: ${board.nakedPairCount}');
-    result.add('Number of Hidden Pairs: ${board.hiddenPairCount}');
-    result.add(
-        'Number of Pointing Pairs/Triples: ${board.pointingPairTripleCount}');
-    result.add(
-        'Number of Box/Line Intersections: ${board.boxLineReductionCount}');
-    result.add('Number of Guesses: ${board.guessCount}');
-    result.add('Number of Backtracks: ${board.backtrackCount}');
-
-    return result;
   }
 
   bool onlyValueInRow(int index) {
@@ -465,14 +450,12 @@ class _GamePageState extends State<GamePage> {
       );
 
       if (result != null && result) {
-        setState(() {
-          generatePuzzle();
-        });
+        generatePuzzle();
+        setState(() {});
       }
     } else {
-      setState(() {
-        generatePuzzle();
-      });
+      generatePuzzle();
+      setState(() {});
     }
   }
 
@@ -615,7 +598,6 @@ class _GamePageState extends State<GamePage> {
         }
 
         return Align(
-          //alignment: middle ? Alignment.bottomCenter : Alignment.bottomLeft,
           alignment: Alignment.bottomCenter,
           child: SizedBox(
             height: totalSize,
@@ -645,6 +627,9 @@ class _GamePageState extends State<GamePage> {
       final blockSize = ((size - 24.0) / 10).floorToDouble();
       final totalSize = blockSize * 9 + 24.0;
 
+      final textStyle = textTheme.monospace.copyWith(fontSize: blockSize / 2.0);
+      final color = textTheme.textHigh;
+
       return Align(
         alignment: orientation == Orientation.landscape
             ? Alignment.bottomLeft
@@ -664,9 +649,11 @@ class _GamePageState extends State<GamePage> {
                 onPressed: selectedIndex == -1 || isReadonly(selectedIndex)
                     ? null
                     : () => removeValue(selectedIndex),
+                active: selectedIndex != -1 && 0 == board.puzzle[selectedIndex],
                 style: ButtonThemeData(
-                  textStyle:
-                      textTheme.monospace.copyWith(fontSize: blockSize / 2.0),
+                  textStyle: textStyle,
+                  highlightColor: textTheme.textPrimaryHigh,
+                  color: color,
                 ),
               ),
               ...List.generate(rowColSecSize, (index) {
@@ -682,10 +669,13 @@ class _GamePageState extends State<GamePage> {
                           isReadonly(selectedIndex)
                       ? null
                       : () => addValue(selectedIndex, index + 1),
+                  active: selectedIndex != -1 &&
+                      index + 1 == board.puzzle[selectedIndex],
                   style: ButtonThemeData(
-                    textStyle:
-                        textTheme.monospace.copyWith(fontSize: blockSize / 2.0),
+                    textStyle: textStyle,
                     disabledColor: completed ? textTheme.textLow : null,
+                    highlightColor: textTheme.textPrimaryHigh,
+                    color: color,
                   ),
                 );
               }),
@@ -807,7 +797,7 @@ class _GamePageState extends State<GamePage> {
             ],
           );
 
-          return result ?? true;
+          return result ?? false;
         }
 
         return true;
@@ -883,7 +873,7 @@ class _GamePageState extends State<GamePage> {
                   onPressed: redoActions.isNotEmpty ? redoAction : null,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
+                  padding: const EdgeInsets.only(left: 8.0),
                   child: Button.icon(
                     isBlockFlipped ? Icons.flip_to_back : Icons.flip_to_front,
                     onPressed: selectedIndex == -1 || isReadonly(selectedIndex)
@@ -899,13 +889,14 @@ class _GamePageState extends State<GamePage> {
                     onPressed: newGame,
                   ),
                 ),
-                Button(
-                  body: const Text('Clear'),
+                Button.icon(
+                  Icons.clear,
+                  tooltip: 'Clear board',
                   onPressed:
                       !listEquals(puzzle, board.puzzle) ? clearGame : null,
                 ),
-                Button(
-                  body: Text(formatDuration()),
+                Button.text(
+                  formatDuration(),
                   onPressed: pauseGame,
                 ),
               ],

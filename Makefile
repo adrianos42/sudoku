@@ -19,11 +19,14 @@ linux:
 
 page:
 	rm -rf docs/*
+	mkdir -p docs
 	flutter build web -v
 	cp -r -v build/web/* docs
 
 android:
 	flutter build apk
 	flutter install --use-application-binary=build/app/outputs/flutter-apk/app-release.apk
+
+all: linux page android
 
 .PHONY: linux android
