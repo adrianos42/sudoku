@@ -271,28 +271,18 @@ class _GamePageState extends State<GamePage> {
         final hasPuzzle = board.generatePuzzleSymmetry(Symmetry.random);
         board.solve();
 
-        if (hasPuzzle) {
-          if (board.difficulty == Difficulty.easy) {
-            if (board.givenCount > 50 ||
-                board.givenCount < 45 ||
-                board.hiddenSingleCount != 0) {
-              continue;
-            }
-          } else if (board.difficulty == Difficulty.medium) {
-            if (board.givenCount > 40 ||
-                board.givenCount < 35 ||
-                !(board.boxLineReductionCount == 0 ||
-                    board.pointingPairTripleCount == 0 ||
-                    board.hiddenPairCount == 0 ||
-                    board.nakedPairCount == 0)) {
-              continue;
-            }
-          } else if (board.difficulty == Difficulty.hard) {
-            if (board.givenCount > 28 || board.hiddenSingleCount != 0) {
-              continue;
-            }
-          } else {
-            throw 'Invalid set difficulty.';
+        if (hasPuzzle && board.difficulty == board.generatedDifficulty) {
+          if (board.difficulty == Difficulty.easy && board.givenCount < 32) {
+            continue;
+          }
+
+          if (board.difficulty == Difficulty.medium &&
+              (board.givenCount > 32 || board.givenCount < 27)) {
+            continue;
+          }
+
+          if (board.difficulty == Difficulty.hard && board.givenCount > 27) {
+            continue;
           }
 
           puzzle = List.from(board.puzzle);
@@ -304,6 +294,8 @@ class _GamePageState extends State<GamePage> {
           resetBlockStates();
           gameDuration.reset();
           startTimer();
+
+          print(board.givenCount);
 
           return;
         }
@@ -649,7 +641,9 @@ class _GamePageState extends State<GamePage> {
                 onPressed: selectedIndex == -1 || isReadonly(selectedIndex)
                     ? null
                     : () => removeValue(selectedIndex),
-                active: selectedIndex != -1 && 0 == board.puzzle[selectedIndex],
+                active: selectedIndex != -1 &&
+                    0 == board.puzzle[selectedIndex] &&
+                    !blockStates[selectedIndex].flipped,
                 style: ButtonThemeData(
                   textStyle: textStyle,
                   highlightColor: textTheme.textPrimaryHigh,
@@ -670,7 +664,8 @@ class _GamePageState extends State<GamePage> {
                       ? null
                       : () => addValue(selectedIndex, index + 1),
                   active: selectedIndex != -1 &&
-                      index + 1 == board.puzzle[selectedIndex],
+                      index + 1 == board.puzzle[selectedIndex] &&
+                      !blockStates[selectedIndex].flipped,
                   style: ButtonThemeData(
                     textStyle: textStyle,
                     disabledColor: completed ? textTheme.textLow : null,

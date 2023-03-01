@@ -265,17 +265,45 @@ class Sudoku {
 
     switch (value) {
       case Difficulty.easy:
-        _eliminatePositions = 25;
+        _eliminatePositions = boardSize - 45;
         break;
       case Difficulty.medium:
-        _eliminatePositions = 35;
+        _eliminatePositions = boardSize - 21;
         break;
       case Difficulty.hard:
         _eliminatePositions = boardSize;
         break;
-      default: 
+      default:
         _eliminatePositions = boardSize;
     }
+  }
+
+  Difficulty get generatedDifficulty {
+    if (guessCount > 0) {
+      return Difficulty.hard;
+    }
+    
+    if (boxLineReductionCount > 0) {
+      return Difficulty.medium;
+    }
+
+    if (pointingPairTripleCount > 0) {
+      return Difficulty.medium;
+    }
+
+    if (hiddenPairCount > 0) {
+      return Difficulty.medium;
+    }
+
+    if (nakedPairCount > 0) {
+      return Difficulty.medium;
+    }
+
+    if (hiddenSingleCount > 0) {
+      return Difficulty.easy;
+    }
+
+    return Difficulty.unknown;
   }
 
   /// The 81 integers that make up a sudoku puzzle.

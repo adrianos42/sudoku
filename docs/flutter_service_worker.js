@@ -3,15 +3,15 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "sudoku.png": "1a1d661881fe8e52d7e2df0e9b978b61",
+  "sudoku.png": "618d75e704a3300b09a8805246f10d60",
 "canvaskit/canvaskit.wasm": "3de12d898ec208a5f31362cc00f09b9e",
 "canvaskit/canvaskit.js": "97937cb4c2c2073c968525a3e08c86a3",
 "canvaskit/profiling/canvaskit.wasm": "371bc4e204443b0d5e774d64a046eb99",
 "canvaskit/profiling/canvaskit.js": "c21852696bc1cc82e8894d851c01921a",
-"main.dart.js": "c3183ecc74d991da647849515dab3937",
+"main.dart.js": "0cd07efa28c0e27101b9bbff2bb3c613",
 "flutter.js": "a85fcf6324d3c4d3ae3be1ae4931e9c5",
 "assets/NOTICES": "485a8682c2d28d3f84c4a55c8af2148d",
-"assets/assets/sudoku.png": "7606d8a6f8c1405d4868db6016763f1c",
+"assets/assets/sudoku.png": "1a14db7f23b766b0563e799e3601febb",
 "assets/FontManifest.json": "690bd94bbfad2fd6d2e4b7ceb664a425",
 "assets/AssetManifest.json": "acfb5d33bb25846ad7b0914e093c8a64",
 "assets/packages/desktop/fonts/IBM_Plex_Sans/IBMPlexSans-Bold.ttf": "5159a5d89abe8bf68b09b569dbeccbc0",
@@ -54,17 +54,13 @@ const RESOURCES = {
 "assets/packages/desktop/fonts/IBM_Plex_Mono/IBMPlexMono-Regular.ttf": "cb46f1f18358474393e7ccd02be3998a",
 "assets/packages/desktop/fonts/IBM_Plex_Mono/IBMPlexMono-Medium.ttf": "1f86f6c46bf066316c13a9cba815ccfd",
 "assets/packages/desktop/fonts/IBM_Plex_Mono/IBMPlexMono-Thin.ttf": "19dbee61fc3b65e55edc0ae9c2b554a8",
-"index.html": "eb2bda7262922cfaa21335fe4afbff9a",
-"/": "eb2bda7262922cfaa21335fe4afbff9a",
+"index.html": "d23c154f7fea85fb37643b3553f511b6",
+"/": "d23c154f7fea85fb37643b3553f511b6",
 "manifest.json": "afdb0705880dc5195dbbd5aca9b52ae3",
-"icons/Icon-512.png": "9e78b2e2eb457bb9962c6097156f4198",
-"icons/Icon-192.png": "7606d8a6f8c1405d4868db6016763f1c",
-"icons/sudoku_72.png": "88272bb0f08097e64c995e149bf246ec",
-"icons/sudoku_96.png": "f711d9dc908be5eae8424f8a8e4e3b82",
-"icons/sudoku_144.png": "dbc653fbff63094199311d1042fc6c55",
-"icons/Icon-maskable-512.png": "9e78b2e2eb457bb9962c6097156f4198",
-"icons/sudoku_48.png": "95e80e09c44dc9754353247309a6bd5f",
-"icons/Icon-maskable-192.png": "7606d8a6f8c1405d4868db6016763f1c",
+"icons/Icon-512.png": "4990e847b6be4af512fc184c5d638c40",
+"icons/Icon-192.png": "1a14db7f23b766b0563e799e3601febb",
+"icons/Icon-maskable-512.png": "4990e847b6be4af512fc184c5d638c40",
+"icons/Icon-maskable-192.png": "1a14db7f23b766b0563e799e3601febb",
 "version.json": "185f26ebeddf704501049ca172567d3d"
 };
 
