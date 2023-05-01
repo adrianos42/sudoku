@@ -1,9 +1,9 @@
 import 'package:desktop/desktop.dart';
 
-import 'home.dart';
-import 'game.dart';
-import 'sudoku.dart';
 import 'data.dart';
+import 'game.dart';
+import 'home.dart';
+import 'sudoku.dart';
 
 void main() => runApp(MyApp());
 

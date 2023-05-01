@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:desktop/desktop.dart';
 import 'package:flutter/foundation.dart';
 
+import 'package:wakelock/wakelock.dart';
+
 import 'actions.dart';
 import 'block.dart';
 import 'data.dart';
@@ -294,8 +296,6 @@ class _GamePageState extends State<GamePage> {
           resetBlockStates();
           gameDuration.reset();
           startTimer();
-
-          print(board.givenCount);
 
           return;
         }
@@ -644,7 +644,7 @@ class _GamePageState extends State<GamePage> {
                 active: selectedIndex != -1 &&
                     0 == board.puzzle[selectedIndex] &&
                     !blockStates[selectedIndex].flipped,
-                style: ButtonThemeData(
+                theme: ButtonThemeData(
                   textStyle: textStyle,
                   highlightColor: textTheme.textPrimaryHigh,
                   color: color,
@@ -666,7 +666,7 @@ class _GamePageState extends State<GamePage> {
                   active: selectedIndex != -1 &&
                       index + 1 == board.puzzle[selectedIndex] &&
                       !blockStates[selectedIndex].flipped,
-                  style: ButtonThemeData(
+                  theme: ButtonThemeData(
                     textStyle: textStyle,
                     disabledColor: completed ? textTheme.textLow : null,
                     highlightColor: textTheme.textPrimaryHigh,
@@ -706,9 +706,18 @@ class _GamePageState extends State<GamePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    Wakelock.enable().catchError((_) {});
+  }
+
+  @override
   void dispose() {
     gameTimer?.cancel();
     gameTimer = null;
+
+    Wakelock.disable().catchError((_) {});
 
     super.dispose();
   }
@@ -811,7 +820,7 @@ class _GamePageState extends State<GamePage> {
                   child: Button.icon(
                     Icons.arrow_back,
                     size: 36.0,
-                    style: ButtonThemeData(
+                    theme: ButtonThemeData(
                       color: textTheme.textHigh,
                       hoverColor: textTheme.textLow,
                       highlightColor: textTheme.textHigh,
@@ -884,8 +893,8 @@ class _GamePageState extends State<GamePage> {
                     onPressed: newGame,
                   ),
                 ),
-                Button.icon(
-                  Icons.clear,
+                Button.text(
+                  'Clear',
                   tooltip: 'Clear board',
                   onPressed:
                       !listEquals(puzzle, board.puzzle) ? clearGame : null,

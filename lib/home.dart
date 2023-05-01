@@ -1,4 +1,5 @@
 import 'package:desktop/desktop.dart';
+
 import 'data.dart';
 import 'sudoku.dart';
 
@@ -236,7 +237,7 @@ class _ThemeToggleState extends State<_ThemeToggle> {
         return Button.icon(
           Icons.dark_mode,
           onPressed: widget.onPressed,
-          style: ButtonThemeData(
+          theme: ButtonThemeData(
             color: iconForeground,
           ),
         );
@@ -244,7 +245,7 @@ class _ThemeToggleState extends State<_ThemeToggle> {
         return Button.icon(
           Icons.light_mode,
           onPressed: widget.onPressed,
-          style: ButtonThemeData(color: iconForeground),
+          theme: ButtonThemeData(color: iconForeground),
         );
     }
   }

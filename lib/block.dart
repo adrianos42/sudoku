@@ -1,5 +1,4 @@
 import 'package:desktop/desktop.dart';
-
 import 'package:flutter/services.dart';
 
 import 'state.dart';
@@ -177,7 +176,6 @@ class _BlockState extends State<Block> {
         color: foreground,
       );
       final colorScheme = themeData.colorScheme;
-      final size = (constraints.maxWidth / 2.0).roundToDouble() - 2.0;
 
       Widget selectText(int i) {
         final text = widget.state.values[i] == 0
@@ -311,8 +309,6 @@ class BlockBorder extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()..color = borderColor;
-
-    double xy = blockSize + 2.0;
 
     // top
     canvas.drawRect(

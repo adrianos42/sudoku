@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:ui' show Brightness, Color;
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:desktop/desktop.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'actions.dart';
 import 'sudoku.dart';
 

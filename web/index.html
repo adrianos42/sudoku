@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
   <meta charset="UTF-8">
@@ -12,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="sudoku">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-  <link rel="icon" type="image/png" href="sudoku.png"/>
+  <link rel="icon" type="image/png" href="sudoku.png" />
 
   <title>sudoku</title>
   <link rel="manifest" href="manifest.json">
@@ -24,16 +25,18 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
 </head>
-<body style="background-color: black; background-image: url('icons/Icon-512.png'); background-repeat: no-repeat; background-attachment: fixed; background-position: center;">
+
+<body
+  style="background-color: black; background-image: url('icons/Icon-512.png'); background-size: 20vh; background-repeat: no-repeat; background-attachment: fixed; background-position: center;">
   <script>
-    window.addEventListener('load', function(ev) {
+    window.addEventListener('load', function (ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
+        onEntrypointLoaded: function (engineInitializer) {
+          engineInitializer.initializeEngine().then(function (appRunner) {
             appRunner.runApp();
           });
         }
@@ -41,4 +44,5 @@
     });
   </script>
 </body>
+
 </html>
