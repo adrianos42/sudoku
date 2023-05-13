@@ -38,59 +38,85 @@ class Data {
   static Future<SharedPreferences> get _data => SharedPreferences.getInstance();
 
   static set puzzle(List<int> value) {
-    _data.then((data) {
-      data.setStringList('puzzle', value.map((e) => e.toString()).toList());
+    _data.then((data) async {
+      await data.setStringList(
+          'puzzle', value.map((e) => e.toString()).toList());
     });
   }
 
   static set difficulty(Difficulty value) {
-    _data.then((data) {
-      data.setInt('difficulty', value.index);
+    _data.then((data) async {
+      await data.setInt('difficulty', value.index);
     });
   }
 
   static set gameDuration(Duration value) {
-    _data.then((data) {
-      data.setInt('duration', value.inSeconds);
+    _data.then((data) async {
+      await data.setInt('duration', value.inSeconds);
     });
   }
 
   static updateAction(String action, int length, int index, BoardAction value) {
-    _data.then((data) {
-      data.setInt('${action}_action_${index}_flippedIndex', value.flippedIndex);
-      data.setInt('${action}_action_${index}_index', value.index);
-      data.setInt('${action}_action_${index}_lastValue', value.lastValue);
-      data.setInt('${action}_action_${index}_value', value.value);
-      data.setInt(
+    _data.then((data) async {
+      await data.setInt(
+          '${action}_action_${index}_flippedIndex', value.flippedIndex);
+      await data.setInt('${action}_action_${index}_index', value.index);
+      await data.setInt('${action}_action_${index}_lastValue', value.lastValue);
+      await data.setInt('${action}_action_${index}_value', value.value);
+      await data.setInt(
           '${action}_action_${index}_actionType', value.actionType.index);
-      data.setInt('${action}_action_length', length);
+      await data.setInt('${action}_action_${index}_flippedValues_length',
+          value.flippedValues.length);
+      for (int i = 0; i < value.flippedValues.length; i += 1) {
+        await data.setInt('${action}_action_${index}_flippedValues_$i',
+            value.flippedValues[i]);
+      }
+
+      await data.setInt('${action}_action_length', length);
     });
   }
 
   static removeLastAction(String action, int length) {
-    _data.then((data) {
-      data.remove('${action}_action_${length}_flippedIndex');
-      data.remove('${action}_action_${length}_index');
-      data.remove('${action}_action_${length}_lastValue');
-      data.remove('${action}_action_${length}_value');
-      data.remove('${action}_action_${length}_actionType');
-      data.setInt('${action}_action_length', length);
+    _data.then((data) async {
+      await data.remove('${action}_action_${length}_flippedIndex');
+      await data.remove('${action}_action_${length}_index');
+      await data.remove('${action}_action_${length}_lastValue');
+      await data.remove('${action}_action_${length}_value');
+      await data.remove('${action}_action_${length}_actionType');
+      final flippedValuesLength = data.getInt(
+            '${action}_action_${length}_flippedValues_length',
+          ) ??
+          0;
+      for (int i = 0; i < flippedValuesLength; i += 1) {
+        await data.remove('${action}_action_${length}_flippedValues_$i');
+      }
+      await data.remove('${action}_action_${length}_flippedValues_length');
+
+      await data.setInt('${action}_action_length', length);
     });
   }
 
   static clearActions(String action, int length) {
-    _data.then((data) {
+    _data.then((data) async {
       for (int i = 0; i < length; i += 1) {
-        data.remove('${action}_action_${i}_flippedIndex');
-        data.remove('${action}_action_${i}_index');
-        data.remove('${action}_action_${i}_lastValue');
-        data.remove('${action}_action_${i}_value');
-        data.remove(
+        await data.remove('${action}_action_${i}_flippedIndex');
+        await data.remove('${action}_action_${i}_index');
+        await data.remove('${action}_action_${i}_lastValue');
+        await data.remove('${action}_action_${i}_value');
+        await data.remove(
           '${action}_action_${i}_actionType',
         );
+        final flippedValuesLength = data.getInt(
+              '${action}_action_${i}_flippedValues_length',
+            ) ??
+            0;
+        for (int j = 0; j < flippedValuesLength; j += 1) {
+          await data.remove('${action}_action_${i}_flippedValues_$j');
+        }
+        await data.remove('${action}_action_${i}_flippedValues_length');
       }
 
-      data.setInt('${action}_action_length', 0);
+      await data.setInt('${action}_action_length', 0);
     });
   }
 
@@ -109,6 +135,16 @@ class Data {
         final actionType = data.getInt(
           '${action}_action_${i}_actionType',
         );
+        final flippedValues = <int>[];
+        final flippedValuesLength = data.getInt(
+              '${action}_action_${i}_flippedValues_length',
+            ) ??
+            0;
+        for (int j = 0; j < flippedValuesLength; j += 1) {
+          final flippedValue =
+              data.getInt('${action}_action_${i}_flippedValues_$j') ?? 0;
+          flippedValues.add(flippedValue);
+        }
 
         if (flippedIndex == null ||
             index == null ||
@@ -123,6 +159,7 @@ class Data {
           lastValue: lastValue,
           index: index,
           actionType: ActionType.values[actionType],
+          flippedValues: flippedValues,
           flippedIndex: flippedIndex,
         ));
       }
@@ -163,23 +200,23 @@ class Data {
   }
 
   static void clearGameData() {
-    _data.then((data) {
-      data.remove('difficulty');
-      data.remove('duration');
-      data.remove('puzzle');
+    _data.then((data) async {
+      await data.remove('difficulty');
+      await data.remove('duration');
+      await data.remove('puzzle');
 
       int? length = data.getInt('undo_action_length');
 
       if (length != null) {
         clearActions('undo', length);
-        data.remove('undo_action_length');
+        await data.remove('undo_action_length');
       }
 
       length = data.getInt('redo_action_length');
 
       if (length != null) {
         clearActions('redo', length);
-        data.remove('redo_action_length');
+        await data.remove('redo_action_length');
       }
     });
   }
@@ -189,14 +226,14 @@ class Data {
   }
 
   static set themeBrightness(Brightness value) {
-    _data.then((data) {
-      data.setInt('themeBrightness', value.index);
+    _data.then((data) async {
+      await data.setInt('themeBrightness', value.index);
     });
   }
 
   static set themeColor(PrimaryColors value) {
-    _data.then((data) {
-      data.setInt('themeColor', value.index);
+    _data.then((data) async {
+      await data.setInt('themeColor', value.index);
     });
   }
 

@@ -1,6 +1,9 @@
+import 'package:collection/collection.dart';
+
 enum ActionType {
   set,
   flip,
+  flipClear,
   add,
 }
 
@@ -11,12 +14,14 @@ class BoardAction {
     required this.index,
     required this.actionType,
     this.flippedIndex = -1,
+    this.flippedValues = const [],
   });
 
   final int value;
   final int lastValue;
   final int index;
   final int flippedIndex;
+  final List<int> flippedValues;
   final ActionType actionType;
 
   @override
@@ -26,6 +31,7 @@ class BoardAction {
         index,
         actionType,
         flippedIndex,
+        const ListEquality().hash(flippedValues),
       );
 
   @override
@@ -41,7 +47,8 @@ class BoardAction {
         other.lastValue == lastValue &&
         other.index == index &&
         other.actionType == actionType &&
-        other.flippedIndex == flippedIndex;
+        other.flippedIndex == flippedIndex &&
+        const ListEquality().equals(other.flippedValues, flippedValues);
   }
 
   @override

@@ -103,9 +103,15 @@ class _GamePageState extends State<GamePage> {
           blockStates[action.index].values[action.flippedIndex] =
               action.lastValue;
           break;
+        case ActionType.flipClear:
+          for (int i = 0; i < action.flippedValues.length; i += 1) {
+            blockStates[action.index].values[i] = action.flippedValues[i];
+          }
+          break;
       }
 
       redoActions.add(action);
+
       Data.updateAction(
         'redo',
         redoActions.length,
@@ -137,9 +143,16 @@ class _GamePageState extends State<GamePage> {
         case ActionType.add:
           blockStates[action.index].values[action.flippedIndex] = action.value;
           break;
+
+        case ActionType.flipClear:
+          for (int i = 0; i < action.flippedValues.length; i += 1) {
+            blockStates[action.index].values[i] = 0;
+          }
+          break;
       }
 
       undoActions.add(action);
+
       Data.updateAction(
         'undo',
         undoActions.length,
@@ -220,6 +233,27 @@ class _GamePageState extends State<GamePage> {
         }
       }
     }
+  }
+
+  void removeBlockValue(int index) {
+    setState(() {
+      final flippedValues =
+          blockStates[index].values.where((e) => e > 0).toList();
+
+      pushAction(
+        BoardAction(
+          value: 0,
+          lastValue: 0,
+          flippedValues: flippedValues,
+          index: index,
+          actionType: ActionType.flipClear,
+        ),
+      );
+
+      for (int i = 0; i < flippedValues.length; i += 1) {
+        blockStates[index].values[i] = 0;
+      }
+    });
   }
 
   void removeValue(int index) {
@@ -609,7 +643,7 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  Widget createNumbersSet(Orientation orientation) {
+  Widget createNumbersSet(Orientation orientation, bool isBlockFlipped) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       final textTheme = Theme.of(context).textTheme;
@@ -641,6 +675,9 @@ class _GamePageState extends State<GamePage> {
                 onPressed: selectedIndex == -1 || isReadonly(selectedIndex)
                     ? null
                     : () => removeValue(selectedIndex),
+                onLongPress: isBlockFlipped
+                    ? () => removeBlockValue(selectedIndex)
+                    : null,
                 active: selectedIndex != -1 &&
                     0 == board.puzzle[selectedIndex] &&
                     !blockStates[selectedIndex].flipped,
@@ -756,7 +793,7 @@ class _GamePageState extends State<GamePage> {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: createNumbersSet(orientation),
+                      child: createNumbersSet(orientation, isBlockFlipped),
                     ),
                   ),
                 Center(
@@ -766,7 +803,7 @@ class _GamePageState extends State<GamePage> {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: createNumbersSet(orientation),
+                      child: createNumbersSet(orientation, isBlockFlipped),
                     ),
                   ),
               ],

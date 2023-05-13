@@ -5,19 +5,15 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  desktop: any
-  shared_preferences: ^2.0.18
+  desktop: ^4.0.0
+  shared_preferences: ^2.1.1
   wakelock: ^0.6.2
-
-#dependency_overrides:
-#  desktop:
-#    path:
-#      ../desktop/desktop
+  collection: ^1.17.1
 
 dev_dependencies:
   flutter_test:
